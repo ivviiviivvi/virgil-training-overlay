@@ -10,14 +10,19 @@ func currentFocusApp() -> String {
 var prev_name = currentFocusApp()
 Swift.print("New focus: \(prev_name)")
 
-// Schedule a timer to check every second
-let updateTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { _ in
+// Register observer for app activation events (Event-driven instead of polling)
+// This optimization eliminates unnecessary CPU wake-ups every second.
+let observer = NSWorkspace.shared.notificationCenter.addObserver(
+   forName: NSWorkspace.didActivateApplicationNotification,
+   object: nil,
+   queue: .main
+) { _ in
    let new_name = currentFocusApp()
    if prev_name != new_name {
       Swift.print("New focus: \(new_name)")
       prev_name = new_name
    }
-})
+}
 
 // Detect Ctrl-C to stop observing
 let sigintSrc = DispatchSource.makeSignalSource(signal: SIGINT, queue: .main)
