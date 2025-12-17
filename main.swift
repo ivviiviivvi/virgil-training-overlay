@@ -2,6 +2,13 @@
 import Foundation
 import AppKit.NSWorkspace
 
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+   print("Usage: mac-tooltip")
+   print("Monitors and prints the name of the frontmost application.")
+   print("\nPress Ctrl-C to stop monitoring.")
+   exit(0)
+}
+
 // Returns the name of the frontmost app, or <none> if no app is frontmost
 func currentFocusApp() -> String {
    NSWorkspace.shared.frontmostApplication?.localizedName ?? "<none>"
