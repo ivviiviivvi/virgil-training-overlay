@@ -1,23 +1,40 @@
 #!/usr/bin/swift
 import Foundation
-import AppKit.NSWorkspace
+import AppKit
 
-// Returns the name of the frontmost app, or <none> if no app is frontmost
-func currentFocusApp() -> String {
-   NSWorkspace.shared.frontmostApplication?.localizedName ?? "<none>"
+// Sanitize input to remove control characters and prevent log injection
+func sanitize(_ input: String) -> String {
+    return input.components(separatedBy: .controlCharacters).joined(separator: "")
 }
 
-var prev_name = currentFocusApp()
-Swift.print("New focus: \(prev_name)")
+// Returns the formatted timestamp
+func timestamp() -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "HH:mm:ss"
+    return formatter.string(from: Date())
+}
 
-// Schedule a timer to check every second
-let updateTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { _ in
-   let new_name = currentFocusApp()
-   if prev_name != new_name {
-      Swift.print("New focus: \(new_name)")
-      prev_name = new_name
-   }
-})
+// Print the focus change with timestamp and sanitized name
+func printFocus(_ name: String) {
+    let cleanName = sanitize(name)
+    Swift.print("[\(timestamp())] New focus: \(cleanName)")
+}
+
+// Initial print
+if let app = NSWorkspace.shared.frontmostApplication {
+    printFocus(app.localizedName ?? "<none>")
+}
+
+// Observer for application activation
+NSWorkspace.shared.notificationCenter.addObserver(
+    forName: NSWorkspace.didActivateApplicationNotification,
+    object: nil,
+    queue: .main
+) { notification in
+    if let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication {
+        printFocus(app.localizedName ?? "<none>")
+    }
+}
 
 // Detect Ctrl-C to stop observing
 let sigintSrc = DispatchSource.makeSignalSource(signal: SIGINT, queue: .main)
@@ -27,4 +44,4 @@ sigintSrc.setEventHandler {
 }
 sigintSrc.resume()
 
-RunLoop.current.run(mode: .default, before: .distantFuture)
+RunLoop.current.run()
