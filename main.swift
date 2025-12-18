@@ -2,9 +2,15 @@
 import Foundation
 import AppKit.NSWorkspace
 
+// Sanitize input to prevent log injection (CWE-117)
+func sanitize(_ input: String) -> String {
+   return input.components(separatedBy: .controlCharacters).joined(separator: "")
+}
+
 // Returns the name of the frontmost app, or <none> if no app is frontmost
 func currentFocusApp() -> String {
-   NSWorkspace.shared.frontmostApplication?.localizedName ?? "<none>"
+   let name = NSWorkspace.shared.frontmostApplication?.localizedName ?? "<none>"
+   return sanitize(name)
 }
 
 var prev_name = currentFocusApp()
