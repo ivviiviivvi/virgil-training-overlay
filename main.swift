@@ -2,9 +2,16 @@
 import Foundation
 import AppKit.NSWorkspace
 
+// Sentinel: Prevent Log Injection by removing control characters.
+// This ensures that malicious application names cannot corrupt logs or inject terminal commands.
+func sanitize(_ text: String) -> String {
+    return text.components(separatedBy: CharacterSet.controlCharacters).joined(separator: " ")
+}
+
 // Returns the name of the frontmost app, or <none> if no app is frontmost
 func currentFocusApp() -> String {
-   NSWorkspace.shared.frontmostApplication?.localizedName ?? "<none>"
+   let appName = NSWorkspace.shared.frontmostApplication?.localizedName ?? "<none>"
+   return sanitize(appName)
 }
 
 var prev_name = currentFocusApp()
