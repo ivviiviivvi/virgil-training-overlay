@@ -49,10 +49,9 @@ notificationCenter.addObserver(
     object: nil,
     queue: .main
 ) { notification in
-    // Retrieve the application from the notification's user info
-    if let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication {
-        handleFocusChange(app.localizedName)
-    }
+// Retrieve the application from the notification's user info
+let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+handleFocusChange(app?.localizedName)
 }
 
 // MARK: - Signal Handling
