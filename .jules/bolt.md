@@ -1,9 +1,3 @@
-# Performance Journal
-
-## Learnings
-
-### Event-Driven vs Polling
-- **Date**: 2024-05-22
-- **Context**: Monitoring frontmost application changes.
-- **Change**: Switched from `Timer`-based polling (1s interval) to `NSWorkspace.didActivateApplicationNotification`.
-- **Impact**: Reduced CPU usage and battery drain by only waking up when the OS notifies of a change, rather than waking up every second regardless of activity. This aligns with the "event-driven over polling" directive.
+## 2024-05-24 - [String Sanitization Allocation]
+**Learning:** Even simple string operations like `components(separatedBy:).joined()` can be expensive due to array allocation, especially in hot paths or event handlers.
+**Action:** Use `rangeOfCharacter(from:)` to check for the necessity of sanitization before performing expensive split/join operations. This creates a zero-allocation fast path for the common case.
