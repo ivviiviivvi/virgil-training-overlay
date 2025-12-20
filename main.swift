@@ -9,6 +9,13 @@ import AppKit
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
     let safeName = name ?? "<none>"
+
+    // Performance: Avoid expensive string splitting and joining if no control characters exist.
+    // This optimization handles the common case (clean strings) efficiently with a single scan.
+    if safeName.rangeOfCharacter(from: CharacterSet.controlCharacters) == nil {
+        return safeName
+    }
+
     // Security: Remove control characters to prevent log injection vulnerabilities.
     // This ensures that the output is safe for consumption by other tools.
     return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
