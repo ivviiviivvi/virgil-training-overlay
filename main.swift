@@ -2,6 +2,19 @@
 import Foundation
 import AppKit
 
+// MARK: - CLI Arguments
+
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    let filename = URL(fileURLWithPath: CommandLine.arguments[0]).lastPathComponent
+    Swift.print("OVERVIEW: Tracks the frontmost application and prints changes to stdout.")
+    Swift.print("")
+    Swift.print("USAGE: \(filename)")
+    Swift.print("")
+    Swift.print("OPTIONS:")
+    Swift.print("  -h, --help    Show this help information.")
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
