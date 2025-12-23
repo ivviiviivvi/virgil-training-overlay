@@ -9,9 +9,21 @@ import AppKit
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
     let safeName = name ?? "<none>"
+
+    // Security: Truncate to 128 characters to prevent DoS via excessively long application names.
+    // This limits the impact if an application provides a malicious or malformed name.
+    let truncatedName = safeName.prefix(128)
+
     // Security: Remove control characters to prevent log injection vulnerabilities.
-    // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
+    // Optimization: Filter unicodeScalars directly to minimize allocation overhead
+    // and correctly handle control checks in Swift 5.5.
+    var sanitized = ""
+    for scalar in truncatedName.unicodeScalars {
+        if !CharacterSet.controlCharacters.contains(scalar) {
+            sanitized.append(String(scalar))
+        }
+    }
+    return sanitized
 }
 
 // MARK: - State
