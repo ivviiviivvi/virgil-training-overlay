@@ -2,6 +2,15 @@
 import Foundation
 import AppKit
 
+// MARK: - CLI Arguments
+
+// Security/Performance: Check arguments before initializing heavyweight NSWorkspace.
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    print("Usage: mac-tooltip [-h|--help]")
+    print("  Tracks the frontmost application and prints 'New focus: <App Name>'.")
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
@@ -9,9 +18,23 @@ import AppKit
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
     let safeName = name ?? "<none>"
-    // Security: Remove control characters to prevent log injection vulnerabilities.
-    // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
+
+    // Security: Truncate to 128 characters to prevent Denial of Service (DoS) vulnerabilities.
+    // This prevents processing extremely long strings that could cause memory exhaustion.
+    let truncated = safeName.prefix(128)
+
+    // Security: Remove control characters to prevent Log Injection vulnerabilities.
+    // Optimization: Use unicodeScalars and reserveCapacity to minimize allocation overhead.
+    var result = ""
+    result.reserveCapacity(truncated.unicodeScalars.count)
+
+    for scalar in truncated.unicodeScalars {
+        // Check for control characters (Cc) and format characters (Cf) to match standard sanitization behavior
+        if !scalar.properties.isControl && scalar.properties.generalCategory != .format {
+             result.append(String(scalar))
+        }
+    }
+    return result
 }
 
 // MARK: - State
