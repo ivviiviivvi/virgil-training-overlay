@@ -2,6 +2,23 @@
 import Foundation
 import AppKit
 
+// MARK: - CLI Arguments
+
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    print("""
+    mac-tooltip - Monitors and outputs the name of the frontmost macOS application.
+
+    Usage: ./main.swift [options]
+
+    Options:
+      -h, --help    Show this help message and exit.
+
+    Output:
+      Prints "New focus: <App Name>" whenever the active application changes.
+    """)
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
@@ -49,9 +66,9 @@ notificationCenter.addObserver(
     object: nil,
     queue: .main
 ) { notification in
-// Retrieve the application from the notification's user info
-let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
-handleFocusChange(app?.localizedName)
+    // Retrieve the application from the notification's user info
+    let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+    handleFocusChange(app?.localizedName)
 }
 
 // MARK: - Signal Handling
