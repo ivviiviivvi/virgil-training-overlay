@@ -8,10 +8,20 @@ import AppKit
 /// - Parameter name: The raw application name.
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
-    let safeName = name ?? "<none>"
-    // Security: Remove control characters to prevent log injection vulnerabilities.
-    // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
+    // Security: Truncate to prevent DoS with excessively long names.
+    let safeName = (name ?? "<none>").prefix(128)
+
+    // Optimization: Filter unicode scalars directly to avoid overhead of splitting and joining strings.
+    // Also uses reserveCapacity for performance.
+    var result = ""
+    result.reserveCapacity(safeName.unicodeScalars.count)
+
+    for scalar in safeName.unicodeScalars {
+        if !CharacterSet.controlCharacters.contains(scalar) {
+            result.append(Character(scalar))
+        }
+    }
+    return result
 }
 
 // MARK: - State
