@@ -31,6 +31,24 @@ func handleFocusChange(_ rawName: String?) {
     }
 }
 
+// MARK: - CLI Argument Handling
+
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    let filename = URL(fileURLWithPath: CommandLine.arguments[0]).lastPathComponent
+    print("""
+    Usage: \(filename) [options]
+
+    Tracks and outputs the name of the frontmost application in real-time.
+
+    Options:
+      -h, --help    Show this help message and exit
+
+    Output Format:
+      New focus: <App Name>
+    """)
+    exit(0)
+}
+
 // MARK: - Main Logic
 
 // Performance: We switched from a polling Timer to NSWorkspace notifications.
