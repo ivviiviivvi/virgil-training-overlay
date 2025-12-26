@@ -8,10 +8,25 @@ import AppKit
 /// - Parameter name: The raw application name.
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
-    let safeName = name ?? "<none>"
-    // Security: Remove control characters to prevent log injection vulnerabilities.
-    // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
+    guard let safeName = name else { return "<none>" }
+
+    // Performance & Security: Truncate to 128 characters to prevent DoS
+    // and reduce processing overhead for abnormally long names.
+    let truncated = safeName.prefix(128)
+
+    // Performance: Filter unicode scalars directly to avoid allocating intermediate arrays
+    // and strings (which components(separatedBy:) does).
+    var result = ""
+    result.reserveCapacity(truncated.unicodeScalars.count)
+
+    for scalar in truncated.unicodeScalars {
+        // Security: Remove control characters to prevent log injection.
+        // We check isControl and .format category to cover CharacterSet.controlCharacters equivalent.
+        if !scalar.properties.isControl && scalar.properties.generalCategory != .format {
+            result.append(Character(scalar))
+        }
+    }
+    return result
 }
 
 // MARK: - State
@@ -32,6 +47,14 @@ func handleFocusChange(_ rawName: String?) {
 }
 
 // MARK: - Main Logic
+
+// Performance: Check for help flags before initializing heavy NSWorkspace.
+// This prevents unnecessary resource allocation when just checking usage.
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    print("Usage: mac-tooltip [-h|--help]")
+    print("Tracks the frontmost application and prints 'New focus: <App Name>'")
+    exit(0)
+}
 
 // Performance: We switched from a polling Timer to NSWorkspace notifications.
 // This event-driven approach significantly reduces CPU usage and battery drain
