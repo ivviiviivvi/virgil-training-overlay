@@ -2,6 +2,13 @@
 import Foundation
 import AppKit
 
+// MARK: - CLI Arguments
+
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    Swift.print("Usage: mac-tooltip [-h|--help]\n\nMonitors the active application and prints 'New focus: <App Name>'")
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
@@ -9,9 +16,23 @@ import AppKit
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
     let safeName = name ?? "<none>"
-    // Security: Remove control characters to prevent log injection vulnerabilities.
-    // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
+
+    // Security: Truncate to 128 characters to prevent DoS vulnerabilities (memory exhaustion).
+    let truncatedName = String(safeName.prefix(128))
+
+    // Security: Remove control characters to prevent log injection.
+    // Using CharacterSet check on scalars is safer and more performant than string splitting.
+    let controlChars = CharacterSet.controlCharacters
+
+    var result = ""
+    result.reserveCapacity(truncatedName.unicodeScalars.count)
+
+    for scalar in truncatedName.unicodeScalars {
+        if !controlChars.contains(scalar) {
+            result.append(Character(scalar))
+        }
+    }
+    return result
 }
 
 // MARK: - State
