@@ -8,10 +8,25 @@ import AppKit
 /// - Parameter name: The raw application name.
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
-    let safeName = name ?? "<none>"
-    // Security: Remove control characters to prevent log injection vulnerabilities.
-    // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
+    guard let safeName = name else { return "<none>" }
+
+    // Security & Performance: Truncate to avoid DoS with massive strings.
+    // This limits the amount of processing required for unusually long app names.
+    let truncated = safeName.prefix(128)
+
+    // Performance: Filter using unicodeScalars to avoid expensive string splitting/joining.
+    // We pre-allocate capacity to avoid reallocations during string construction.
+    var result = ""
+    result.reserveCapacity(truncated.unicodeScalars.count)
+
+    for scalar in truncated.unicodeScalars {
+        // Security: Remove control characters (Cc) and formatting characters (Cf)
+        // to strictly exclude potentially dangerous characters, equivalent to CharacterSet.controlCharacters.
+        if !scalar.properties.isControl && scalar.properties.generalCategory != .format {
+            result.append(Character(scalar))
+        }
+    }
+    return result
 }
 
 // MARK: - State
@@ -32,6 +47,15 @@ func handleFocusChange(_ rawName: String?) {
 }
 
 // MARK: - Main Logic
+
+// Performance: Early exit for help flags to avoid initializing NSWorkspace.
+// This prevents unnecessary resource allocation during simple information requests.
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    print("Usage: mac-tooltip [-h|--help]")
+    print("  -h, --help: Show this help message")
+    print("  <no args>:  Track frontmost application focus changes")
+    exit(0)
+}
 
 // Performance: We switched from a polling Timer to NSWorkspace notifications.
 // This event-driven approach significantly reduces CPU usage and battery drain
