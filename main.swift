@@ -2,6 +2,15 @@
 import Foundation
 import AppKit
 
+// MARK: - CLI Argument Handling
+
+// Check for help flags before initializing heavy resources (NSWorkspace)
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    print("Usage: mac-tooltip")
+    print("Tracks the frontmost application and prints 'New focus: <App Name>'.")
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
@@ -9,9 +18,23 @@ import AppKit
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
     let safeName = name ?? "<none>"
+
+    // Security: Truncate to 128 characters to prevent Denial of Service (DoS) from extremely long strings.
+    let truncated = safeName.prefix(128)
+
     // Security: Remove control characters to prevent log injection vulnerabilities.
-    // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
+    // Optimization: Filter Unicode scalars directly to avoid overhead of splitting strings.
+    // Note: In Swift 5.5, Character does not have isControl, so we check Unicode.Scalar.
+    var result = ""
+    result.reserveCapacity(truncated.unicodeScalars.count)
+
+    for scalar in truncated.unicodeScalars {
+        if !CharacterSet.controlCharacters.contains(scalar) {
+            result.append(Character(scalar))
+        }
+    }
+
+    return result
 }
 
 // MARK: - State
@@ -49,9 +72,9 @@ notificationCenter.addObserver(
     object: nil,
     queue: .main
 ) { notification in
-// Retrieve the application from the notification's user info
-let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
-handleFocusChange(app?.localizedName)
+    // Retrieve the application from the notification's user info
+    let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+    handleFocusChange(app?.localizedName)
 }
 
 // MARK: - Signal Handling
