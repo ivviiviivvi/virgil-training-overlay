@@ -9,9 +9,22 @@ import AppKit
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
     let safeName = name ?? "<none>"
+
+    // Performance & Security: Truncate to 128 chars to prevent DoS and reduce processing.
+    let truncatedName = safeName.prefix(128)
+
     // Security: Remove control characters to prevent log injection vulnerabilities.
-    // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
+    // Optimization: Use unicodeScalars filtering to avoid overhead of components(separatedBy:).joined()
+    // This reduces memory allocation and CPU usage by iterating scalars directly.
+    var result = ""
+    result.reserveCapacity(truncatedName.unicodeScalars.count)
+
+    for scalar in truncatedName.unicodeScalars {
+        if !CharacterSet.controlCharacters.contains(scalar) {
+            result.append(Character(scalar))
+        }
+    }
+    return result
 }
 
 // MARK: - State
@@ -49,9 +62,9 @@ notificationCenter.addObserver(
     object: nil,
     queue: .main
 ) { notification in
-// Retrieve the application from the notification's user info
-let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
-handleFocusChange(app?.localizedName)
+    // Retrieve the application from the notification's user info
+    let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+    handleFocusChange(app?.localizedName)
 }
 
 // MARK: - Signal Handling
