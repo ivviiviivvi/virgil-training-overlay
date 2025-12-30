@@ -2,6 +2,23 @@
 import Foundation
 import AppKit
 
+// MARK: - CLI Arguments
+
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    print("USAGE: mac-tooltip [options]")
+    print("")
+    print("Tracks and prints the name of the frontmost application.")
+    print("")
+    print("OPTIONS:")
+    print("  -h, --help    Show this help message and exit")
+    print("")
+    print("OUTPUT:")
+    print("  New focus: <App Name>")
+    print("")
+    print("Press Ctrl+C to exit.")
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
