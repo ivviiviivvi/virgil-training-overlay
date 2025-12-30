@@ -2,6 +2,17 @@
 import Foundation
 import AppKit
 
+// MARK: - CLI Argument Handling
+
+// Security: Check arguments before initializing NSWorkspace to prevent unnecessary resource allocation.
+// This prevents resource exhaustion (DoS) if the user simply wants help.
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    let scriptName = URL(fileURLWithPath: CommandLine.arguments[0]).lastPathComponent
+    print("Usage: \(scriptName)")
+    print("Tracks the frontmost application and outputs: New focus: <App Name>")
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
@@ -9,9 +20,25 @@ import AppKit
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
     let safeName = name ?? "<none>"
-    // Security: Remove control characters to prevent log injection vulnerabilities.
-    // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
+
+    // Security: Truncate to 128 characters to prevent DoS via excessively long application names.
+    // This limits the memory impact of processing malicious or malformed app names.
+    let truncated = safeName.prefix(128)
+
+    // Optimization: Pre-allocate capacity to avoid reallocations.
+    var result = ""
+    result.reserveCapacity(truncated.unicodeScalars.count)
+
+    // Security: Filter out control characters to prevent log injection.
+    // Using unicodeScalars is safer and more performant than string splitting.
+    // We check each scalar against the control character set.
+    for scalar in truncated.unicodeScalars {
+        if !CharacterSet.controlCharacters.contains(scalar) {
+            result.append(Character(scalar))
+        }
+    }
+
+    return result
 }
 
 // MARK: - State
@@ -49,9 +76,9 @@ notificationCenter.addObserver(
     object: nil,
     queue: .main
 ) { notification in
-// Retrieve the application from the notification's user info
-let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
-handleFocusChange(app?.localizedName)
+    // Retrieve the application from the notification's user info
+    let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+    handleFocusChange(app?.localizedName)
 }
 
 // MARK: - Signal Handling
