@@ -2,6 +2,22 @@
 import Foundation
 import AppKit
 
+// MARK: - CLI Configuration
+
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    print("""
+    Usage: mac-tooltip
+
+    Description:
+        Tracks the frontmost application and outputs "New focus: <App Name>"
+        whenever the active application changes.
+
+    Options:
+        -h, --help    Show this help information.
+    """)
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
