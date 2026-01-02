@@ -2,16 +2,37 @@
 import Foundation
 import AppKit
 
+// MARK: - CLI Argument Handling
+
+// Security: Check arguments before initializing heavy resources like NSWorkspace
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    print("Usage: mac-tooltip")
+    print("  Tracks the frontmost application and prints its name to stdout.")
+    print("  Options:")
+    print("    -h, --help  Show this help message")
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
 /// - Parameter name: The raw application name.
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
-    let safeName = name ?? "<none>"
-    // Security: Remove control characters to prevent log injection vulnerabilities.
-    // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
+    // Security: Truncate to 128 characters to prevent DoS via memory exhaustion
+    let safeName = (name ?? "<none>").prefix(128)
+
+    // Security: Remove control characters to prevent log injection.
+    // Using Unicode.Scalar filtering is more performant than string splitting.
+    var result = ""
+    result.reserveCapacity(safeName.unicodeScalars.count)
+
+    for scalar in safeName.unicodeScalars {
+        if !CharacterSet.controlCharacters.contains(scalar) {
+            result.append(Character(scalar))
+        }
+    }
+    return result
 }
 
 // MARK: - State
