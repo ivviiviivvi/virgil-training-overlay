@@ -11,7 +11,17 @@ func getSanitizedAppName(_ name: String?) -> String {
     let safeName = name ?? "<none>"
     // Security: Remove control characters to prevent log injection vulnerabilities.
     // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
+    // Optimization: Filter unicode scalars directly to avoid overhead of splitting and joining strings.
+    // This reduces memory allocation and improves performance for frequent calls.
+    var result = ""
+    result.reserveCapacity(safeName.unicodeScalars.count)
+
+    for scalar in safeName.unicodeScalars {
+        if !CharacterSet.controlCharacters.contains(scalar) {
+            result.append(Character(scalar))
+        }
+    }
+    return result
 }
 
 // MARK: - State
