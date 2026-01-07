@@ -2,6 +2,17 @@
 import Foundation
 import AppKit
 
+// Check for help flags early to avoid initializing NSWorkspace if not needed
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    print("Usage: mac-tooltip [options]")
+    print("")
+    print("Tracks the frontmost application on macOS and outputs its name to stdout.")
+    print("")
+    print("Options:")
+    print("  -h, --help    Show this help message and exit")
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
