@@ -14,6 +14,18 @@ func getSanitizedAppName(_ name: String?) -> String {
     return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
 }
 
+// MARK: - Argument Handling
+
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    Swift.print("OVERVIEW: Monitors and outputs the name of the frontmost application.")
+    Swift.print("")
+    Swift.print("USAGE: mac-tooltip")
+    Swift.print("")
+    Swift.print("OPTIONS:")
+    Swift.print("  -h, --help              Show help information.")
+    exit(0)
+}
+
 // MARK: - State
 
 var lastPrintedName = ""
