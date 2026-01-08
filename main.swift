@@ -2,6 +2,21 @@
 import Foundation
 import AppKit
 
+// MARK: - CLI Arguments
+
+// UX: Add help flags for better discoverability
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    print("""
+    Usage: mac-tooltip
+
+    Tracks the frontmost application and prints its name when focus changes.
+
+    Options:
+      -h, --help  Show this help message and exit
+    """)
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
