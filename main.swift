@@ -25,18 +25,13 @@ func getSanitizedAppName(_ name: String?) -> String {
     // Security: Truncate to prevent DoS via excessively long strings (byte-based limit)
     let truncated = String(safeName.utf8.prefix(128)) ?? ""
 
-    // Performance & Security: optimize sanitization
-    // Use unicodeScalars view to check for control characters
-    var result = ""
-    result.reserveCapacity(truncated.unicodeScalars.count)
+    // Security: Remove control characters using Foundation-optimized routines
+    let truncatedString = String(truncated)
+    let sanitized = truncatedString
+        .components(separatedBy: CharacterSet.controlCharacters)
+        .joined()
 
-    for scalar in truncated.unicodeScalars {
-        if !CharacterSet.controlCharacters.contains(scalar) {
-            result.append(Character(scalar))
-        }
-    }
-
-    return result
+    return sanitized
 }
 
 // MARK: - State
