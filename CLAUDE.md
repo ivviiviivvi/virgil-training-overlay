@@ -81,7 +81,7 @@ let package = Package(
 
 ### main.swift (Implementation)
 **Purpose:** Complete application logic
-**Lines:** 30
+**Lines:** 31
 **Shebang:** `#!/usr/bin/swift` (can run as script)
 
 **Code Structure:**
