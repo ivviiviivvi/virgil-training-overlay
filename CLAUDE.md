@@ -28,7 +28,7 @@ virgil-training-overlay/
 **Key Characteristics:**
 - Extremely minimal structure (2 source files)
 - No subdirectories, modules, or packages
-- No tests, documentation, or configuration files
+- No automated tests or additional configuration files; minimal documentation (this CLAUDE.md file only)
 - Single-purpose, flat architecture
 - Total code: ~42 lines
 
