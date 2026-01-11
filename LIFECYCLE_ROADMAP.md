@@ -41,7 +41,7 @@ Evolve into a comprehensive training and productivity overlay system that provid
 
 ## Development Lifecycle
 
-### Phase 1: Foundation (Current - Week 4)
+### Phase 1: Foundation (Weeks 1–4)
 **Status:** In Progress
 
 #### Week 1-2: Core Implementation ✓
