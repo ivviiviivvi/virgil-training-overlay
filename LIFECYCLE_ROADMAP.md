@@ -248,6 +248,12 @@ Evolve into a comprehensive training and productivity overlay system that provid
 | Plugin system | v0.8 | P2 | API design |
 | Cloud sync | v0.9 | P3 | History storage |
 
+**Note on history storage evolution**
+
+The initial history storage implementation (v0.4) is designed with future cloud sync in mind:
+- Data model includes stable identifiers and timestamps suitable for multi-device merge and conflict resolution.
+- Storage abstraction decouples local persistence from sync/transport layers.
+- Any v0.9 work for "Cloud sync" is expected to be focused on sync logic, conflict handling, and migration tooling, not a fundamental rewrite of history storage.
 ### Long-term Features (v1.0+)
 - Advanced analytics and insights
 - Team collaboration features
