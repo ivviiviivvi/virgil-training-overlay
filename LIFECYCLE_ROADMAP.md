@@ -533,7 +533,7 @@ Following Semantic Versioning (SemVer): **MAJOR.MINOR.PATCH**
 #### 6. Permissions & Entitlements
 
 **Current Requirements:**
-- Accessibility permissions (NSWorkspace access)
+- None beyond standard NSWorkspace/AppKit APIs (no Accessibility permissions needed for current focus monitoring)
 
 **Future Requirements (as features added):**
 - Screen recording (for overlay features)
