@@ -19,10 +19,10 @@ This is a minimal macOS system monitoring utility that continuously tracks which
 
 ```
 virgil-training-overlay/
-├── .git/                 # Git repository metadata
-├── Package.swift         # Swift Package Manager manifest (12 lines)
-├── main.swift           # Main executable source code (30 lines)
-└── CLAUDE.md            # This file - AI assistant documentation
+├── .git/            # Git repository metadata
+├── Package.swift    # Swift Package Manager manifest (12 lines)
+├── main.swift       # Main executable source code (30 lines)
+└── CLAUDE.md        # This file - AI assistant documentation
 ```
 
 **Key Characteristics:**
