@@ -72,7 +72,7 @@ Evolve into a comprehensive training and productivity overlay system that provid
 
 #### Week 7-8: User Experience
 - [ ] Menu bar integration
-- [ ] System tray icon
+- [ ] Status icon in menu bar
 - [ ] Notification support
 - [ ] Preferences UI
 - [ ] Launch at login support
