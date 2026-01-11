@@ -497,7 +497,7 @@ Following Semantic Versioning (SemVer): **MAJOR.MINOR.PATCH**
 - Encryption at rest (v0.5+)
 - Configurable data retention
 - Explicit privacy policy
-- GDPR compliance (if applicable)
+- GDPR compliance whenever the application is used by, or monitors the behavior of, individuals in the EU/EEA/UK
 
 #### 4. Security Testing
 
