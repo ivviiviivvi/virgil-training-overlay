@@ -31,9 +31,9 @@ func getSanitizedAppName(_ name: String?) -> String {
         .components(separatedBy: CharacterSet.controlCharacters)
         .joined()
 
-    return sanitized
-}
-
+    if !CharacterSet.controlCharacters.contains(scalar) {
+        result.unicodeScalars.append(scalar)
+    }
 // MARK: - State
 
 var lastPrintedName = ""
