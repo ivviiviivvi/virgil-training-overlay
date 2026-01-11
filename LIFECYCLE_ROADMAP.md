@@ -598,7 +598,7 @@ Following Semantic Versioning (SemVer): **MAJOR.MINOR.PATCH**
 ### Technical Debt Registry
 
 #### Current Technical Debt
-1. **Polling-based detection** → Should migrate to event-driven (NSWorkspaceDidActivateApplicationNotification)
+1. **Polling-based detection** → Should migrate to event-driven (NSWorkspace.didActivateApplicationNotification)
 2. **No error handling** → Comprehensive error handling needed
 3. **Console-only output** → Proper logging framework needed
 4. **No configuration** → Configuration system needed
