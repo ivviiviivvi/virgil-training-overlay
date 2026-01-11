@@ -85,11 +85,11 @@ let package = Package(
 **Shebang:** `#!/usr/bin/swift` (can run as script)
 
 **Code Structure:**
-1. **Lines 1-3:** Imports (Foundation, AppKit.NSWorkspace)
-2. **Lines 5-8:** Helper function `currentFocusApp()` - retrieves frontmost app name
+1. **Lines 2-3:** Imports (Foundation, AppKit.NSWorkspace)
+2. **Lines 6-8:** Helper function `currentFocusApp()` - retrieves frontmost app name
 3. **Lines 10-11:** Initial state setup and first output
-4. **Lines 13-20:** Timer-based polling loop (1-second interval)
-5. **Lines 22-28:** SIGINT handler for graceful Ctrl-C shutdown
+4. **Lines 14-20:** Timer-based polling loop (1-second interval)
+5. **Lines 23-28:** SIGINT handler for graceful Ctrl-C shutdown
 6. **Line 30:** RunLoop to keep application alive
 
 **Key Functions:**
