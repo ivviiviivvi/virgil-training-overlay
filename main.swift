@@ -57,8 +57,7 @@ notificationCenter.addObserver(
 
 // MARK: - Signal Handling
 
-// Detect Ctrl-C to stop observing and exit gracefully
-signal(SIGINT, SIG_IGN)
+// Let DispatchSource handle signal masking automatically
 let sigintSrc = DispatchSource.makeSignalSource(signal: SIGINT, queue: .main)
 sigintSrc.setEventHandler {
     Swift.print("")
