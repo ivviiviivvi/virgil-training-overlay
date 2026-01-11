@@ -712,13 +712,15 @@ If project transitions to new maintainer:
 
 ### User Metrics (Post-Launch)
 
+_Initial targets below are aspirational for post-MVP/post-launch and will be revisited once baseline data is available._
+
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Daily Active Users | Growth 10% MoM | Daily |
-| User Retention (30-day) | >60% | Monthly |
-| Net Promoter Score (NPS) | >50 | Quarterly |
-| App Crash Rate | <0.1% sessions | Daily |
-| Feature Adoption | >30% (new features) | Per feature |
+| Daily Active Users | Aspirational: 10% MoM growth | Daily |
+| User Retention (30-day) | Aspirational: >60% | Monthly |
+| Net Promoter Score (NPS) | Aspirational: >50 | Quarterly |
+| App Crash Rate | Aspirational: <0.1% sessions | Daily |
+| Feature Adoption | Aspirational: >30% adoption of new features | Per feature |
 
 ### Business Metrics (Future)
 
