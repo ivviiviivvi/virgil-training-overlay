@@ -53,10 +53,19 @@ notificationCenter.addObserver(
 let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
 handleFocusChange(app?.localizedName)
 }
+    forName: NSWorkspace.didActivateApplicationNotification,
+    object: nil,
+    queue: nil
+) { notification in
+signal(SIGINT, SIG_IGN)
+let sigintSrc = DispatchSource.makeSignalSource(signal: SIGINT, queue: .global())
+sigintSrc.setEventHandler {
+    }
+}
 
 // MARK: - Signal Handling
 
-// Detect Ctrl-C to stop observing and exit gracefully
+// Let DispatchSource handle signal masking automatically
 let sigintSrc = DispatchSource.makeSignalSource(signal: SIGINT, queue: .main)
 sigintSrc.setEventHandler {
     Swift.print("")
