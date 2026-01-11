@@ -2,6 +2,18 @@
 import Foundation
 import AppKit
 
+// MARK: - CLI Argument Handling
+
+// Early check for help flags to avoid unnecessary initialization
+if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--help") {
+    print("Usage: mac-tooltip")
+    print("Tracks the frontmost application and prints its name to stdout.")
+    print("")
+    print("Options:")
+    print("  -h, --help   Show this help message")
+    exit(0)
+}
+
 // MARK: - Helper Functions
 
 /// Sanitizes the application name to prevent log injection by removing control characters.
@@ -9,11 +21,19 @@ import AppKit
 /// - Returns: The sanitized application name.
 func getSanitizedAppName(_ name: String?) -> String {
     let safeName = name ?? "<none>"
-    // Security: Remove control characters to prevent log injection vulnerabilities.
-    // This ensures that the output is safe for consumption by other tools.
-    return safeName.components(separatedBy: CharacterSet.controlCharacters).joined()
-}
 
+    // Security: Truncate to prevent DoS via excessively long strings (byte-based limit)
+    let truncated = String(safeName.utf8.prefix(128)) ?? ""
+
+    // Security: Remove control characters using Foundation-optimized routines
+    let truncatedString = String(truncated)
+    let sanitized = truncatedString
+        .components(separatedBy: CharacterSet.controlCharacters)
+        .joined()
+
+    if !CharacterSet.controlCharacters.contains(scalar) {
+        result.unicodeScalars.append(scalar)
+    }
 // MARK: - State
 
 var lastPrintedName = ""
@@ -49,9 +69,9 @@ notificationCenter.addObserver(
     object: nil,
     queue: .main
 ) { notification in
-// Retrieve the application from the notification's user info
-let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
-handleFocusChange(app?.localizedName)
+    // Retrieve the application from the notification's user info
+    let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+    handleFocusChange(app?.localizedName)
 }
 
 // MARK: - Signal Handling
