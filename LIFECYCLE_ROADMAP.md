@@ -561,12 +561,13 @@ Following Semantic Versioning (SemVer): **MAJOR.MINOR.PATCH**
 
 ### Version Support Policy
 
-| Version Type | Support Duration | Updates |
-|--------------|------------------|---------|
-| Current Major | Until next major + 6 months | Bug fixes, security patches |
-| Previous Major | 6 months after superseded | Security patches only |
-| Older Versions | Unsupported | Community only |
+| Version Type   | Support Duration           | Updates                                  |
+|----------------|----------------------------|------------------------------------------|
+| Current Major  | Until next major release  | New features, bug fixes, security patches |
+| Previous Major | 6 months after superseded | Security patches only                    |
+| Older Versions | Unsupported                | Community only                           |
 
+**Clarification:** There is a single 6‑month overlap window after a new major release. When a new major (e.g., v2.0) is released, the previous major (e.g., v1.x) receives **security patches only** for 6 months. The “Current Major” does **not** receive an additional, separate 6‑month support period beyond this window.
 **Example:**
 - v2.0 released → v1.x supported for 6 months with security patches
 - v1.x fully deprecated after 6-month grace period
