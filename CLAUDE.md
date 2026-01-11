@@ -209,9 +209,7 @@ func currentFocusApp() -> String {
 - ❌ **No Linux/Windows Alternative:** Would require complete rewrite
 
 ### Permissions
-- May require **Accessibility permissions** on macOS to detect frontmost app
-- Users might see permission prompts on first run
-- Check System Preferences → Security & Privacy → Accessibility
+- The current implementation using `NSWorkspace.shared.frontmostApplication` does not require special permissions (like Accessibility) to function.
 
 ### Performance
 - **Polling Overhead:** Checks every second regardless of changes
