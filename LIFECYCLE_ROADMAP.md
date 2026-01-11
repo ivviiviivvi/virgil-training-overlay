@@ -435,7 +435,7 @@ Following Semantic Versioning (SemVer): **MAJOR.MINOR.PATCH**
 |------|----------|-------------|
 | Code Review | 1+ approvals | Required for merge |
 | Unit Tests | 100% passing | Blocking |
-| Code Coverage | >80% | Warning at <80% |
+| Code Coverage | >=80% | Warning at <80% |
 | Integration Tests | 100% passing | Blocking for release |
 | Performance | No >10% regression | Blocking for release |
 | Security Scan | No high/critical issues | Blocking for release |
