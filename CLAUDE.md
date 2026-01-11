@@ -56,7 +56,7 @@ virgil-training-overlay/
 
 ### Package.swift (Configuration)
 **Purpose:** Swift Package Manager manifest
-**Lines:** 12
+**Lines:** 13
 **Key Details:**
 - Package name: "mac-tooltip"
 - Swift tools version: 5.5
