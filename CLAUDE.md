@@ -41,7 +41,7 @@ virgil-training-overlay/
 
 ### Frameworks
 - **Foundation:** Core Swift framework for basic types
-- **AppKit.NSWorkspace:** macOS workspace management
+- **AppKit:** macOS framework for user interface and workspace management
   - `NSWorkspace.shared.frontmostApplication` - Detects active application
 
 ### Runtime APIs
