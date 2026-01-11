@@ -47,6 +47,15 @@ handleFocusChange(workspace.frontmostApplication?.localizedName)
 notificationCenter.addObserver(
     forName: NSWorkspace.didActivateApplicationNotification,
     object: nil,
+    queue: .main
+) { notification in
+    // Retrieve the application from the notification's user info
+    if let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication {
+        handleFocusChange(app.localizedName)
+    }
+}
+    forName: NSWorkspace.didActivateApplicationNotification,
+    object: nil,
     queue: nil
 ) { notification in
     // Retrieve the application from the notification's user info
