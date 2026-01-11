@@ -688,7 +688,7 @@ If project transitions to new maintainer:
 | Code Coverage | >80% | Per commit (CI) |
 | Build Success Rate | >95% | Per commit (CI) |
 | PR Merge Time | <3 days | Weekly average |
-| Technical Debt Ratio | <5% | Monthly via SonarQube |
+| Technical Debt Ratio | <5% | Monthly via static analysis tool |
 | Security Vulnerabilities | 0 critical/high | Weekly scan |
 
 ### Quality Metrics
