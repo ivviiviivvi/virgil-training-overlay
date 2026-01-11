@@ -22,8 +22,8 @@ if CommandLine.arguments.contains("-h") || CommandLine.arguments.contains("--hel
 func getSanitizedAppName(_ name: String?) -> String {
     let safeName = name ?? "<none>"
 
-    // Security: Truncate to prevent DoS via excessively long strings
-    let truncated = safeName.prefix(128)
+    // Security: Truncate to prevent DoS via excessively long strings (byte-based limit)
+    let truncated = String(safeName.utf8.prefix(128)) ?? ""
 
     // Performance & Security: optimize sanitization
     // Use unicodeScalars view to check for control characters
